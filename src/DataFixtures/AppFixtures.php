@@ -37,6 +37,7 @@ class AppFixtures extends Fixture
                 ->setContent($faker->realTextBetween(200, 500))
                 // ->setCategory($faker->randomElement($categories));      # $faker->randomElement($categories) to select a random Category object from the $categories array
                 // ->setCategory($categories[array_rand($categories)]);
+                // ->setCategory($categories[$faker->numberBetween(0. count($categories)-1)]);
                 ->setCategory($faker->$categories(0, self::NB_CATEGORIES - 1));
 
             $manager->persist($article);
