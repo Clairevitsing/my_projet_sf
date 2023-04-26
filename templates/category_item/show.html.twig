@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}
+	Category
+{% endblock %}
+
+{% block body %}
+	{% if category is not null %}
+		<h1>{{ category.name }}</h1>
+		<p>{{ category.description }}</p>
+		<ul>
+			{% for article in category.articles %}
+				<li>{{ article.title }}</li>
+			{% else %}
+				<p>No article found.</p>
+			{% endfor %}
+		</ul>
+	{% else %}
+		<p>can't find the category.</p>
+	{% endif %}
+{% endblock %}

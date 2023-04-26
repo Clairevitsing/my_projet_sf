@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+
+{% block title %}
+	Category
+{% endblock %}
+
+{% block body %}
+	<h1>Category :{{ category.name }}</h1>
+
+
+	{# <a href="{{ path('category_item',{ id: category.id })}}">
+						{{ category.name }}
+					</a> #}
+
+	<ul>
+		{% for article in category.articles %}
+			<li>
+				<a href="{{ path('article_item', {id: article.id})}}">{{ article.title }}</a>
+				-
+				{{ article.dateCreated|date("m/d/Y") }}
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

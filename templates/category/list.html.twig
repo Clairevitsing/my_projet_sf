@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}
+	Categories
+{% endblock %}
+
+{% block body %}
+	<h1>Categories</h1>
+	# liste des categories avec Twig:
+	<ul>
+		{% for category in categories %}
+			<li>
+				{{category.Name}}
+				-
+				{{category.articles|length}}
+				articles
+			</li>
+
+		{% endfor %}
+	</ul>
+	{# #category.articles.count
+											#category.article|length #}
+{% endblock %}
