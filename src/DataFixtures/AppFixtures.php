@@ -4,19 +4,47 @@ namespace App\DataFixtures;
 
 use App\Entity\Article;
 use App\Entity\Category;
+use App\Entity\User;
 use DateTime;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
     private const NB_CATEGORIES = 4;
     private const NB_ARTICLES = 50;
+    // private const NB_USERS = 100;
+
+
+    public function __construct(
+        private UserPasswordHasherInterface $hasher
+    ) {
+    }
 
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create();
+
+        $regularUser = new User();
+        $regularUser
+            ->setEmail("bob@bob.com")
+            ->setPassword($this->hasher->hashPassword($regularUser, 'testPassword'));
+
+        $manager->persist($regularUser);
+
+        $adminUser = new User();
+
+        $adminUser
+            ->setEmail("admin@domain.com")
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPassword($this->hasher->hashPassword($regularUser, 'testPassword'));
+
+        $manager->persist($adminUser);
+
+
+
         $categories = [];
         for ($i = 0; $i < self::NB_CATEGORIES; $i++) {
             $category = new Category();
@@ -37,5 +65,32 @@ class AppFixtures extends Fixture
             $manager->persist($article);
         }
         $manager->flush();
+
+
+
+
+        // $password = $faker->password;
+        // $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+        // for ($i = 0; $i < self::NB_USERS; $i++) {
+        //     $roles = [ROLE_USER, ROLE_ADMIN];
+        //     $admin = new User();
+
+        //     $admin->setPassword($hashedPassword);
+        //     $admin->setEmail($faker->email, $i, '@admin.com');
+        //     $admin->setPassword($faker->password);
+        //     $admin->setRoles($faker->randomElement($roles));
+        //     $manager->persist($admin);
+
+
+
+        //     $user_ordinary = new User();
+        //     $user_ordinary->setEmail($faker->email, $i, '@user.com');
+        //     $user_ordinary->setPassword($faker->password);
+        //     $user_ordinary->setRoles($faker->randomElement($roles));
+        //     $manager->persist($user_ordinary);
+
+        //     $manager->flush();
+        // }
     }
 }

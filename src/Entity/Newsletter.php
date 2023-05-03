@@ -6,6 +6,7 @@ use App\Repository\NewsletterRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\ByteString;
 
 #[ORM\Entity(repositoryClass: NewsletterRepository::class)]
 #[UniqueEntity('email', message: 'Email {{ value }} has existing')]
@@ -22,6 +23,12 @@ class Newsletter
 
     private ?string $email = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $token = null;
+
+    #[ORM\Column]
+    private bool $active = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -35,6 +42,30 @@ class Newsletter
     public function setEmail(string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    public function getToken(): ?string
+    {
+        return $this->token;
+    }
+
+    public function setToken(?string $token): self
+    {
+        $this->token = $token;
+
+        return $this;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
+
+    public function setActive(bool $active): self
+    {
+        $this->active = $active;
 
         return $this;
     }
