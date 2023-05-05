@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Article;
 use App\Form\ArticleType;
 use App\Repository\ArticleRepository;
+use App\Security\Voter\ArticleVoter;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -51,6 +52,10 @@ class ArticleCrudMakerController extends AbstractController
     #[Route('/{id}/edit', name: 'app_article_crud_maker_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Article $article, ArticleRepository $articleRepository): Response
     {
+
+        $this->denyAccessUnlessGranted(ArticleVoter::EDIT, $article);     //sujet:article action:edit
+
+
         $form = $this->createForm(ArticleType::class, $article);
         $form->handleRequest($request);
 
@@ -69,6 +74,8 @@ class ArticleCrudMakerController extends AbstractController
     #[Route('/{id}', name: 'app_article_crud_maker_delete', methods: ['POST'])]
     public function delete(Request $request, Article $article, ArticleRepository $articleRepository): Response
     {
+        $this->denyAccessUnlessGranted(ARTICLEVOTER::DELETE, $article);
+
         if ($this->isCsrfTokenValid('delete' . $article->getId(), $request->request->get('_token'))) {
             $articleRepository->remove($article, true);
         }
