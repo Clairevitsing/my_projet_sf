@@ -3,16 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Newsletter;
+use App\Event\NewsletterSubscribedEvent;
 use App\Form\NewsletterType;
 use App\Mail\Newsletter\SubscribedConfirmation;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\String\ByteString;
 
 class NewsletterController extends AbstractController
@@ -21,6 +20,7 @@ class NewsletterController extends AbstractController
     public function subscribe(
         Request $request,
         EntityManagerInterface $em,
+        EventDispatcherInterface $dispatcher,
         SubscribedConfirmation $confirmationEmail
     ): Response {
         $newsletter = new Newsletter();
@@ -29,14 +29,17 @@ class NewsletterController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $newsletter->setToken(
-                ByteString::fromRandom(32)->toString()
-            );
+            // $newsletter->setToken(
+            //     ByteString::fromRandom(32)->toString()
+            // );
             //persist mon email address
             $em->persist($newsletter);
             $em->flush();
 
-            $confirmationEmail->sendTo($newsletter);
+            $event = new NewsletterSubscribedEvent($newsletter);
+            $dispatcher->dispatch($event, NewsletterSubscribedEvent::NAME);
+
+            // $confirmationEmail->sendTo($newsletter);
 
             $this->addFlash('success', 'Votre inscription a été prise en compte, un email de confirmation vous a étét envoyé');
 

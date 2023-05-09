@@ -35,6 +35,5 @@ class ArticleCrudController extends AbstractCrudController
     public function configuration(Actions $actions): Actions
     {
         return $actions;
-        // 
     }
 }
