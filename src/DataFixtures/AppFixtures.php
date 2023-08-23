@@ -30,8 +30,8 @@ class AppFixtures extends Fixture
         $regularUser = new User();
         $regularUser
             ->setEmail("bob@bob.com")
-            ->setPassword('test');
-        // ->setPassword($this->hasher->hashPassword($regularUser, 'test'));
+            // ->setPassword('test');
+            ->setPassword($this->hasher->hashPassword($regularUser, 'test'));
 
         $manager->persist($regularUser);
 
